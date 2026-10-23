@@ -210,22 +210,23 @@ def submit():
     model_score = detector.model_signal(text)
     style_score = stylometry.style_signal(text)
     combined = scoring.combine_signals(model_score, style_score)
+    guess, label = scoring.score_to_label(combined)
 
     audit.log_decision(
         content_id=content_id,
         creator_id=creator_id,
-        guess="ph",
+        guess=guess,
         model_score=model_score,
         style_score=style_score,
         combined_score=combined,
-        label="ph"
+        label=label
     )
 
     return jsonify({
         "content_id": content_id,
-        "guess": "human",
+        "guess": guess,
         "confidence": combined,
-        "label": "placeholder",
+        "label": label,
         "model_score": model_score,
         "style_score": style_score,
     })
@@ -252,13 +253,24 @@ def appeal():
     wrong accusation and nothing at all.
     """
     payload = request.get_json(silent=True) or {}
+    content_id = payload.get("content_id")
+    reasoning = payload.get("reasoning")
 
-    # TODO: delete this and build the route.
+    if not isinstance(content_id, str) or not content_id.strip():
+        return jsonify({"error": "missing_content_id", "message": "Send the content_id from your submission."}), 400
+    if not isinstance(reasoning, str) or not reasoning.strip():
+        return jsonify({"error": "missing_reasoning", "message": "Tell us why you think the label is wrong."}), 400
+
+    history = audit.entries_for(content_id)
+    if not history:
+        return jsonify({"error": "not_found", "message": f"No submission found with id {content_id}."}), 404
+
+    entry = audit.log_appeal(content_id, history[0].get("creator_id"), reasoning)
     return jsonify({
-        "error": "not_implemented",
-        "message": "POST /appeal isn't built yet — see the TODO in app.py.",
-        "you_sent": payload,
-    }), 501
+        "content_id": content_id,
+        "status": entry["status"],
+        "message": "Thanks. Your appeal was received, and a person will review this decision.",
+    })
 
 
 # ── Already works ─────────────────────────────────────────────────────────────

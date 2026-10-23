@@ -103,7 +103,7 @@ def punctuation_density(text: str) -> float:
     w = words(text)
     if not w:
         return 0.0
-    marks = re.findall(r"[;:!?()\u2014\u2013-]", text)
+    marks = re.findall(r"[,;:!?()\u2014\u2013-]", text)
     return len(marks) / len(w)
 
 
@@ -131,17 +131,20 @@ def style_signal(text: str) -> float:
     you trust it. Plain and ordinary, not formal: formal prose reads as *human*
     to signal one, and it is plain writing that gets accused.
     """
-    spread = sentence_length_spread(text)
     ttr = type_token_ratio(text)
     punct = punctuation_density(text)
 
     # Each sub-score: 1.0 = looks AI, 0.0 = looks human.
-    # The ceilings (0.8, 0.15) are guesses — calibrate them on your test texts.
-    spread_ai = max(0.0, min(1.0, 1 - spread / 0.8))  # even sentence lengths → AI-ish
-    ttr_ai    = max(0.0, min(1.0, 1 - ttr))            # repetitive vocabulary → AI-ish
-    punct_ai  = max(0.0, min(1.0, 1 - punct / 0.15))   # little varied punctuation → AI-ish
+    subs = [
+        max(0.0, min(1.0, 1 - ttr)),             # repetitive vocabulary → AI-ish
+        max(0.0, min(1.0, 1 - punct / 0.15)),    # little punctuation → AI-ish
+    ]
+    # Spread needs at least two sentences to mean anything; otherwise leave it out.
+    if len(sentences(text)) >= 2:
+        spread = sentence_length_spread(text)
+        subs.append(max(0.0, min(1.0, 1 - spread / 0.8)))  # even lengths → AI-ish
 
-    return round((spread_ai + ttr_ai + punct_ai) / 3, 4)
+    return round(sum(subs) / len(subs), 4)
 
 
 if __name__ == "__main__":

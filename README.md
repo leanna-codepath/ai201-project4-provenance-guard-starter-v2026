@@ -94,22 +94,15 @@ In this case, the model would lean towards the style score, as that's the more h
 
 ## Label Variants
 
-<!-- The exact text of all three labels, as a reader would see them, and the
-     score range each covers.
-
-     Write them for someone who has never heard the word "threshold". -->
 
 | Label | Score range | The exact text a reader sees |
 |---|---|---|
-| high-confidence human |  |  |
-| unsure |  |  |
-| high-confidence AI |  |  |
+| high-confidence human | 0.00-0.35 | This text was most likely written by a human |
+| unsure | 0.35-0.60 | This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written |
+| high-confidence AI | 0.60-1.00 | This text was most likely written by an AI. If this is incorrect, it can be appealed. |
 
 **Why I worded the "unsure" one this way:**
-<!-- It's the hardest of the three. It has to admit uncertainty without
-     sounding like an accusation, because the person reading it may well have
-     written every word themselves. -->
-
+I worded the "unsure" label in a succient, straightforward way as to minimize any accusations or blame.
 
 
 ---
@@ -129,11 +122,18 @@ In this case, the model would lean towards the style score, as that's the more h
 ```bash
 $ curl -X POST http://127.0.0.1:5000/submit \
   -H "Content-Type: application/json" \
-  -d '{"text": "...", "creator_id": "..."}'
+  -d '{"text": "The purpose of this statement is to provide a clear, concise, and formal overview of the subject under consideration. All information is presented in a consistent manner, maintaining a uniform tone, precise wording, and professional structure throughout the paragraph.", "creator_id": "11"}'
 ```
 
 ```json
-
+{
+  "confidence": 0.6265,
+  "content_id": "983d1fd5-4f87-49d2-b5dd-0b26a7c77058",
+  "guess": "ai",
+  "label": "This text was most likely written by an AI. If this is incorrect, it can be appealed.",
+  "model_score": 0.7599,
+  "style_score": 0.4265
+}
 ```
 
 **An appeal**
@@ -141,11 +141,15 @@ $ curl -X POST http://127.0.0.1:5000/submit \
 ```bash
 $ curl -X POST http://127.0.0.1:5000/appeal \
   -H "Content-Type: application/json" \
-  -d '{"content_id": "...", "reasoning": "..."}'
+  -d '{"content_id": "983d1fd5-4f87-49d2-b5dd-0b26a7c77058", "reasoning": "I wrote this myself. It is my own casual writing style."}'
 ```
 
 ```json
-
+{
+  "content_id": "983d1fd5-4f87-49d2-b5dd-0b26a7c77058",
+  "message": "Thanks. Your appeal was received, and a person will review this decision.",
+  "status": "under_review"
+}
 ```
 
 **What the log shows afterwards**
@@ -155,9 +159,42 @@ $ curl "http://127.0.0.1:5000/log?limit=3"
 ```
 
 ```json
-
+{                                                                                                                                                                                                                                                                                                                                                            
+  "count": 3,
+  "entries": [
+    {
+      "combined_score": 0.6265,
+      "content_id": "a807a05d-8a1c-4333-8a10-344b4b3afe9b",
+      "creator_id": "10",
+      "guess": "ph",
+      "label": "ph",
+      "model_score": 0.7599,
+      "status": "decided",
+      "style_score": 0.4265,
+      "timestamp": "2026-10-23T22:13:58+00:00"
+    },
+    {
+      "combined_score": 0.6265,
+      "content_id": "983d1fd5-4f87-49d2-b5dd-0b26a7c77058",
+      "creator_id": "11",
+      "guess": "ai",
+      "label": "This text was most likely written by an AI. If this is incorrect, it can be appealed.",
+      "model_score": 0.7599,
+      "status": "decided",
+      "style_score": 0.4265,
+      "timestamp": "2026-10-23T22:28:29+00:00"
+    },
+    {
+      "content_id": "983d1fd5-4f87-49d2-b5dd-0b26a7c77058",
+      "creator_id": "11",
+      "event": "appeal",
+      "reasoning": "I wrote this myself. It is my own casual writing style.",
+      "status": "under_review",
+      "timestamp": "2026-10-23T22:30:33+00:00"
+    }
+  ]
+}
 ```
-
 ---
 
 ## How I Used AI
