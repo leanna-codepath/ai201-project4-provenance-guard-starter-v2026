@@ -30,7 +30,7 @@ from flask import Flask, jsonify, request
 
 import audit
 import config
-
+import detector
 app = Flask(__name__)
 
 
@@ -200,16 +200,33 @@ def submit():
     a malformed input is one of the most common real failures there is.
     """
     payload = request.get_json(silent=True) or {}
+    text = payload.get("text")
+    creator_id = payload.get("creator_id")
 
-    # TODO: delete this and build the route.
+    if not isinstance(text, str) or not text.strip():
+        return jsonify({"error": "missing_text", "message": "Send a non-empty 'text' string."}), 400
+
+    content_id = str(uuid.uuid4())
+    model_score = detector.model_signal(text)
+
+    audit.log_decision(
+        content_id=content_id,
+        creator_id=creator_id,
+        guess="ph",
+        model_score=model_score,
+        style_score=0.0,
+        combined_score=0.0,
+        label="ph"
+    )
+
     return jsonify({
-        "error": "not_implemented",
-        "message": "POST /submit isn't built yet — see the TODO in app.py.",
-        "you_sent": {
-            "text_length": len(payload.get("text", "")),
-            "creator_id": payload.get("creator_id"),
-        },
-    }), 501
+        "content_id": content_id,
+        "guess": "human",
+        "confidence": 0.0,
+        "label": "placeholder",
+        "model_score": model_score,
+        "style_score": 0.0,
+    })
 
 
 @app.post("/appeal")
