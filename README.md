@@ -201,15 +201,15 @@ $ curl "http://127.0.0.1:5000/log?limit=3"
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked for general guidance on how the style signal should analyze the text.
+- *What came back:* The model gave me instructions on how to analyze the sentence structure.
+- *What I changed:* The model didn't consider different human writing styles, such as run on sentences, so I had to add those cases.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked whether the thresholds for my labels seemed correct.
+- *What came back:* The AI confirmed that they seemed fine.
+- *What I changed:* I thought the AI label threshol seemed to high, especially since my style signal was changed to lean more human, so I lowered it.
 
 <!-- ═══════════════════════ UNIT 8 — THE TEST ═══════════════════════ -->
 
