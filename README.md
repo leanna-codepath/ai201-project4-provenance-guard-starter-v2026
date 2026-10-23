@@ -36,10 +36,10 @@
 
 ## What This Does
 
-<!-- The path a submission takes, from arriving to the label a reader sees.
-     Six or seven steps — this is the trace you wrote in Milestone 1. -->
-
-
+This project has 7 steps: an API endpoint that recieves a user's text, an input validation that confirms the text
+meets any requirements, detector.py which reads the text for meaning and scores how predictable the text is, 
+stylometry.py which measures the text format, a scoring logic that combines the measurements from the two signals,
+classification logic that chooses a label for the text, and an API response returned to the user.
 
 ---
 
@@ -54,18 +54,29 @@
 ### Signal one — the model signal
 
 **What it measures:**
+Reads the text's meaning and measures how predictable it is, i.e. its perplexity. It returns a score from 0-1 with a 
+higher score means it's more likely AI.
 
 **Why that might differ between human and AI writing:**
+AI writing is often more predictable while human writing is usually less so, with more odd word turns, abrupt turns, etc.
 
 **What it can't see:**
+The signal rewards common words in short sentences. It cannot see if this is just the author's natural way of writing. It also
+can't see if someone has prompted an AI to write in more flowery prose, which is often deemed more human.
 
 ### Signal two — the style signal
 
 **What it measures:**
+This signal measures the text itself, including how much the sentences vary in length, how repetitive the vocabulary is,
+and how varied the punctuation is.
 
 **Why that might differ between human and AI writing:**
+AI writing tends to have more even structure and a less diverse vocab, while human writing is less even and has more
+diversity.
 
 **What it can't see:**
+The signal can't see what the text says. If the text structure changes in a way that does not match the content, it can't
+tell the difference.
 
 ### The combining rule
 
