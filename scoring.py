@@ -52,11 +52,14 @@ def combine_signals(model_score: float, style_score: float) -> float:
     The weights in config.py are placeholders. Change them, or ignore them and
     write a different rule.
     """
-    # TODO: replace this
-    return (
-        config.WEIGHT_MODEL_SIGNAL * model_score
-        + config.WEIGHT_STYLE_SIGNAL * style_score
-    )
+    combined = (config.WEIGHT_MODEL_SIGNAL * model_score
+                + config.WEIGHT_STYLE_SIGNAL * style_score)
+
+    # Disagreement rule: when the signals split hard, don't accuse.
+    if abs(model_score - style_score) > config.DISAGREEMENT_GAP:
+        combined = min(combined, min(model_score, style_score) + config.DISAGREEMENT_GAP / 2)
+
+    return round(max(0.0, min(1.0, combined)), 4)
 
 
 def score_to_label(score: float) -> tuple[str, str]:

@@ -64,8 +64,14 @@ def sentence_length_spread(text: str) -> float:
     `stdev` raises on fewer than two values. Decide what that should return
     before the attack set decides for you.
     """
-    # TODO: replace this
-    return 0.0
+    
+    lengths = [len(words(s)) for s in sentences(text)]
+    lengths = [n for n in lengths if n > 0]
+    if len(lengths) < 2:
+        return 0.0          # no spread measurable — your call what this should mean
+    mean = statistics.mean(lengths)
+    return statistics.stdev(lengths) / mean if mean else 0.0
+
 
 
 def type_token_ratio(text: str) -> float:
@@ -80,8 +86,8 @@ def type_token_ratio(text: str) -> float:
     directly comparable on it, and if your test inputs vary a lot in length,
     that alone can look like a signal.
     """
-    # TODO: replace this
-    return 0.0
+    w = words(text)
+    return len(set(w)) / len(w) if w else 0.0
 
 
 def punctuation_density(text: str) -> float:
@@ -94,8 +100,11 @@ def punctuation_density(text: str) -> float:
         more interesting than full stops, because they vary more between
         writers.
     """
-    # TODO: replace this
-    return 0.0
+    w = words(text)
+    if not w:
+        return 0.0
+    marks = re.findall(r"[;:!?()\u2014\u2013-]", text)
+    return len(marks) / len(w)
 
 
 # ── Combining them ───────────────────────────────────────────────────────────
@@ -122,8 +131,17 @@ def style_signal(text: str) -> float:
     you trust it. Plain and ordinary, not formal: formal prose reads as *human*
     to signal one, and it is plain writing that gets accused.
     """
-    # TODO: replace this
-    return 0.5
+    spread = sentence_length_spread(text)
+    ttr = type_token_ratio(text)
+    punct = punctuation_density(text)
+
+    # Each sub-score: 1.0 = looks AI, 0.0 = looks human.
+    # The ceilings (0.8, 0.15) are guesses — calibrate them on your test texts.
+    spread_ai = max(0.0, min(1.0, 1 - spread / 0.8))  # even sentence lengths → AI-ish
+    ttr_ai    = max(0.0, min(1.0, 1 - ttr))            # repetitive vocabulary → AI-ish
+    punct_ai  = max(0.0, min(1.0, 1 - punct / 0.15))   # little varied punctuation → AI-ish
+
+    return round((spread_ai + ttr_ai + punct_ai) / 3, 4)
 
 
 if __name__ == "__main__":
@@ -139,4 +157,3 @@ if __name__ == "__main__":
     print(f"type_token_ratio         {type_token_ratio(text)}")
     print(f"punctuation_density      {punctuation_density(text)}")
     print(f"style_signal             {style_signal(text)}   (higher = more likely AI)")
-    print("\nAll zeros? These are stubs — Milestone 4 is where you build them.")

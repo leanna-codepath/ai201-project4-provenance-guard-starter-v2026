@@ -74,21 +74,21 @@ tell the difference.
 
 ### The combining rule
 
-<!-- Write the rule in words, then give the numbers. What happens when the two
-     signals disagree? -->
-
 **The rule:**
 
+The system is weighted slightly more towards the model than the style, putting the content of the text ocer the style/text format.
+If the two signals disagree by more than 0.4, lean toward the more-human of the two, because a false accusation costs more than a miss.
+
 **The numbers:**
+The weighted average is (model 0.6, style 0.4). If abs(model_score - style_score) > 0.4, lean towards the more human measurement.
 
 **Where it lives:** `scoring.py::combine_signals`
 
-<!-- ⚠️ The grader checks your code against that line. If your rule lives
-     somewhere else, say where. -->
-
 **A case where my two signals split, and what my rule does with it:**
 
+A case where the two split is on the text "I think a lot of the time, we overcomplicate things. Sometimes you just need to take a step back, figure out what actually matters, and go from there. It’s not always that deep."
 
+In this case, the model would lean towards the style score, as that's the more human score.
 
 ---
 
