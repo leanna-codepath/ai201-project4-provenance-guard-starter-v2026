@@ -44,61 +44,57 @@ Two things worth knowing before you pick numbers:
 ---
 ## 1.
 
-<!-- Your criterion. It must name a number. -->
-
+Of 10 pieces I wrote myself, at most 1 is labeled high-confidence AI.
 
 
 **Why this target:**
 
-
+Since false accusations can be detremential to a human writer's reputation, I want to limit how often false positives occur.
+1 is still allowed because it adds flexibility.
 
 ---
 
 ## 2.
 
-<!-- Your criterion. -->
-
-
+Text I judge borderline scores between 0.4 and 0.6 in at least 4 of 5 cases.
 
 **Why this target:**
 
-
+If a text is borderline, then that means there should be a 50/50 chance of it being either label. This criteria judges if the
+AI has this capability.
 
 ---
 
 ## 3.
 
-<!-- Your criterion. -->
-
+When given test inputs that clearly fall under the three labels, the system should be able to produce each of these labels in
+3/3 trials.
 
 
 **Why this target:**
-
-
+If a label can never be reached that implies the classficiation thresholds are poorly chosen or the scoring logic is broken.
+Being able to reach all three labels means more confident conclusions when one is chosen over another.
 
 ---
 
 ## 4.
 
-<!-- Your criterion. -->
-
+If the given input text is missing, empty, or over the maximum character limit, it should be rejected everytime.
 
 
 **Why this target:**
-
-
+Invalid input is one that cannot be judged, and letting it through introduces more problems along the line.
 
 ---
 
 ## 5.
 
-<!-- Your criterion. -->
-
-
+All valid appeal tests much change status to appealed and get recorded in the system.
 
 **Why this target:**
 
-
+In a system that can make mistakes, there should always be a way to fix said mistakes. Including a record also
+ensures that these changes can be tracked.
 
 ---
 
