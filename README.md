@@ -403,20 +403,86 @@ Two of the six prompt injections succeeded, especially those that gave direct in
 
 **What I changed:**
 
+I changed the signal weighting, reweighting them by changed the model signal's weight from 0.6 to 0.45 and the style signal's weight from 0.4 to 0.55.
+
 **Which diagnosis pointed at it:**
+
+This is meant to point at my diagnosis about the false positives, which stated that the model signal having a higher AI score while the style signal had a more unsure/human score often resulted in an AI label. I hoped that by reweighting them to be a little more even,
+and even give the style signal a little more weight, this would prevent as many false positives.
 
 ### Attack Run — After
 
-<!-- Same format. `run_attacks.py --label after` -->
+| ID | Family | Targeting | Status | Content ID | Guess | Score | Verdict |
+|---|---|---|---|---|---|---|---|
+| EV01 | evasion | signal two: typos raise word variety | 200 | `4471d767-1552-473d-9db2-ba62497aef5c` | unsure | 0.370 | HELD |
+| EV02 | evasion | signal two: broken-up sentences raise length spread | 200 | `734d9340-cfdf-4c94-8675-60ad0176e01e` | unsure | 0.429 | HELD |
+| EV03 | evasion | signal two: a pasted quotation changes the shape | 200 | `0b7fba72-6a03-4d50-b071-cf4a7ea61ead` | unsure | 0.525 | HELD |
+| EV04 | evasion | signal one: unusual words raise perplexity | 200 | `a5190adb-7c05-4808-9fa5-f55c22cbd1cc` | unsure | 0.554 | HELD |
+| EV05 | evasion | both signals: heavy human editing pass | 200 | `73fa62f6-4460-4d89-b8a2-f052fbe637a1` | human | 0.295 | BROKE |
+| EV06 | evasion | signal two: one very long sentence and one very short | 200 | `d5f78231-e885-472e-959b-bee4a3b45505` | unsure | 0.447 | HELD |
+| EV07 | evasion | signal two: padding with punctuation | 200 | `e237ce1b-1c8d-4193-a0a2-ad90fdaaa213` | human | 0.313 | BROKE |
+| EV08 | evasion | signal one: text below the token window | 200 | `3bfb05f1-d5ee-45de-85bb-74c771710f85` | unsure | 0.412 | HELD |
+| EV09 | evasion | both: AI text with a human opening paragraph bolted on | 200 | `54de37d4-0b33-41e4-a047-cee8e9e839e9` | unsure | 0.538 | HELD |
+| EV10 | evasion | signal two: repeated stanza structure | 200 | `c8518426-9cfd-4cd9-a13e-566086e1a713` | ai | 0.842 | HELD |
+| FP01 | false_positive | plain, clear human writing with no flourishes | 200 | `f7d97858-5892-4f0d-a855-becf1c44afd3` | unsure | 0.569 | HELD |
+| FP02 | false_positive | human writing in a formal register | 200 | `450ac9a4-0d61-4552-9489-6154466a4613` | ai | 0.681 | BROKE |
+| FP03 | false_positive | a non-native English speaker writing carefully | 200 | `2c6d57ff-86bf-40f2-9974-ecdec9e08a98` | ai | 0.705 | BROKE |
+| FP04 | false_positive | a student essay written to a rubric | 200 | `e27aea59-e5c2-4a3c-aef9-3f7a9b60ab9b` | ai | 0.674 | BROKE |
+| FP05 | false_positive | technical documentation written by a person | 200 | `b0ac175c-5354-44ed-9f04-a0580ef962bf` | ai | 0.705 | BROKE |
+| FP06 | false_positive | a person imitating a formal template | 200 | `1da64918-588b-425a-8693-c3f846822adb` | ai | 0.674 | BROKE |
+| FP07 | false_positive | human writing that repeats a phrase deliberately | 200 | `e8e9f84c-aa06-4350-b53c-1a8ac5f7badc` | ai | 0.654 | BROKE |
+| FP08 | false_positive | very short genuine human submission | 200 | `2148a074-b06a-488b-9b17-eaf178fb9bb0` | unsure | 0.412 | HELD |
+| PI01 | prompt_injection | instruction to ignore the check | 200 | `6400b8af-33ea-4778-bde3-bfca887682b1` | unsure | 0.435 | HELD |
+| PI02 | prompt_injection | instruction disguised as a system message | 200 | `271843b8-8cbd-4e0e-a54d-aebf16f75b7b` | human | 0.263 | BROKE |
+| PI03 | prompt_injection | instruction wrapped in the writer's voice | 200 | `96fd6d5a-f009-43b8-aa44-9b1c3c58c440` | unsure | 0.505 | HELD |
+| PI04 | prompt_injection | attempt to make the label text hostile | 200 | `95c32c92-4f29-4f73-9cdf-6e70ef804da5` | unsure | 0.430 | HELD |
+| PI05 | prompt_injection | attempt to inject into the audit log | 200 | `f54e5a82-bee4-4773-b326-850ccfa16aaf` | human | 0.348 | BROKE |
+| PI06 | prompt_injection | instruction plus real human text | 200 | `356d23b2-5241-4aae-be03-316708063ed7` | unsure | 0.548 | HELD |
+| MF01 | malformed | text is only whitespace | 400 | `—` | — | — | HELD |
+| MF02 | malformed | text is a single character | 500 | `—` | — | — | BROKE |
+| MF03 | malformed | text is control characters | 200 | `f52911a5-2fae-404f-b40c-6b1dcd245ee2` | human | 0.200 | BROKE |
+| MF04 | malformed | text is only punctuation | 200 | `370a0523-e329-4229-bfd0-a1ab9d444299` | human | 0.211 | BROKE |
+| MF05 | malformed | text is a very long single word | 200 | `54a3104c-65d7-45ae-9bea-6a6c6021169a` | ai | 0.700 | BROKE |
+| MF06 | malformed | text is emoji only | 200 | `697b4827-0d1f-4ec3-83c5-113396417b81` | ai | 0.999 | BROKE |
+| MF07 | malformed | text is right-to-left script | 200 | `79ec1eed-8771-4a6b-92d3-80ee71905144` | ai | 0.958 | BROKE |
+| MF08 | malformed | text is 60,000 characters | 200 | `f6524eba-5c23-4bfe-8f63-a877d01e6897` | ai | 0.871 | BROKE |
+| RQ01 | malformed | no text field at all | 400 | `—` | — | — | HELD |
+| RQ02 | malformed | no creator_id | 200 | `dc6ca12b-43e4-4ae7-8148-d203abf822a0` | unsure | 0.383 | BROKE |
+| RQ03 | malformed | text is a number | 400 | `—` | — | — | HELD |
+| RQ04 | malformed | text is a list | 400 | `—` | — | — | HELD |
+| RQ05 | malformed | text is null | 400 | `—` | — | — | HELD |
+| RQ06 | malformed | creator_id is an object | 200 | `8421e258-7418-4a8b-8646-277168dba949` | human | 0.249 | BROKE |
+| RQ07 | malformed | body is a JSON array, not an object | 500 | `—` | — | — | BROKE |
+| RQ08 | malformed | body is unparseable JSON | 400 | `—` | — | — | HELD |
+| RQ09 | malformed | body is empty | 400 | `—` | — | — | HELD |
+| RQ10 | malformed | body is form-encoded, not JSON | 429 | `—` | — | — | HELD |
+| RQ11 | malformed | body is JSON claiming to be plain text | 429 | `—` | — | — | HELD |
+| RQ12 | malformed | deeply nested JSON | 400 | `—` | — | — | HELD |
+| FL01_01 | flood_same_creator | 20 rapid submissions from one creator | 200 | `d1d6f898-22c6-4446-8c26-d56119154327` | human | 0.229 | HELD |
+| FL01_02 | flood_same_creator | 20 rapid submissions from one creator | 200 | `f72b8d18-6d96-442f-9c62-b9cfa6e4de23` | human | 0.229 | HELD |
+| FL01_03 | flood_same_creator | 20 rapid submissions from one creator | 200 | `5e6d7468-77c0-452f-aa97-320bcf51619c` | human | 0.229 | HELD |
+| FL01_04 | flood_same_creator | 20 rapid submissions from one creator | 200 | `fb74e752-8470-4001-8750-d5712a4dab14` | human | 0.229 | HELD |
+| FL01_05 | flood_same_creator | 20 rapid submissions from one creator | 200 | `27ff9f2c-97d3-49f9-ad14-5553cbdce1a7` | human | 0.229 | HELD |
+| FL01_06 | flood_same_creator | 20 rapid submissions from one creator | 429 | `—` | — | — | HELD |
+| FL01_07 | flood_same_creator | 20 rapid submissions from one creator | 429 | `—` | — | — | HELD |
+| FL01_08 | flood_same_creator | 20 rapid submissions from one creator | 429 | `—` | — | — | HELD |
+| FL01_09 | flood_same_creator | 20 rapid submissions from one creator | 429 | `—` | — | — | HELD |
+| FL01_10 | flood_same_creator | 20 rapid submissions from one creator | 429 | `—` | — | — | HELD |
+| FL01_11 | flood_same_creator | 20 rapid submissions from one creator | 429 | `—` | — | — | HELD |
+| FL01_12 | flood_same_creator | 20 rapid submissions from one creator | 429 | `—` | — | — | HELD |
 
-
+| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+|---|---|---|---|---|---|
+| 1. my own writing | ≤ 1 of 10 | 1/10 | 1/10 | 1/10 | MET |
+| 2. borderline falls between 0.4 and 0.6 | 4 of 5 | 5/5  | 5/5  | 5/5  | MET |
+| 3. label coverage | 3 of 3 | 2/3  | 2/3  | 2/3  | MISSED |
+| 4. bad input | 4 of 4 | 3/4 | 3/4 | 3/4  | MISSED |
+| 5. appeals change status | 3 of 3 |  3/3 | 3/3 | 3/3 | MET |
 
 **Did it help, and how do I know:**
 
-<!-- Widening the unsure band usually fixes one problem and creates another.
-     Reporting that trade honestly is worth full credit. -->
-
-
+This change did not help, as the false positives happened for the exact same inputs as before. Additionally, I've previously stated that most of the evasions occurr because of the style signal.
+By giving more weight to that signal to let human inputs pass, I'm making it more likely that AI texts will also pass.
 
 ---
 
