@@ -343,21 +343,44 @@ The single worst outcome is that a text written carefully by a non-native Englis
 
 ## Run Log and Verdicts
 
-<!-- Your five criteria across three trials. `run_eval.py --label before`. -->
-
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. my own writing | ≤ 1 of 10 | 1/10 | 1/10 | 1/10 | MET |
+| 2. borderline falls between 0.4 and 0.6 | 4 of 5 | 5/5  | 5/5  | 5/5  | MET |
+| 3. label coverage | 3 of 3 | 2/3  | 2/3  | 2/3  | MISSED |
+| 4. bad input | 4 of 4 | 3/4 | 3/4 | 3/4  | MISSED |
+| 5. appeals change status | 3 of 3 |  3/3 | 3/3 | 3/3 | MET |
 
 **Real output from one trial**, pasted as text, naming the file and function
-that produced it:
+that produced it: 
+- Produced by: `run_eval.py::main`
+- Service: `app.py::submit` · scoring: `scoring.py::combine_signals`
 
 ```json
+{"timestamp": "2026-10-30T23:10:45+00:00", "content_id": "3f0defc0-134d-45f3-91c8-56444339cbb8", "creator_id": "eval_my own writi_2", "guess": "unsure", "model_score": 0.4951, "style_score": 0.136, "combined_score": 0.3515, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:45+00:00", "content_id": "3d037ec5-169e-43c7-8999-551b1a5373c5", "creator_id": "eval_my own writi_3", "guess": "unsure", "model_score": 0.5052, "style_score": 0.49, "combined_score": 0.4991, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:46+00:00", "content_id": "b17aa785-8c09-4f6b-8e5f-ebcc9aab9e8b", "creator_id": "eval_my own writi_4", "guess": "human", "model_score": 0.2751, "style_score": 0.2697, "combined_score": 0.2729, "label": "This text was most likely written by a human", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:46+00:00", "content_id": "3bfa19de-ebb4-4ecf-878e-5715ee72e896", "creator_id": "eval_my own writi_5", "guess": "ai", "model_score": 0.7369, "style_score": 0.5868, "combined_score": 0.6769, "label": "This text was most likely written by an AI. If this is incorrect, it can be appealed.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:46+00:00", "content_id": "003b704f-0060-4044-8e2a-3833cc3fbb34", "creator_id": "eval_my own writi_6", "guess": "unsure", "model_score": 0.6425, "style_score": 0.3652, "combined_score": 0.5316, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:46+00:00", "content_id": "8ee11637-e9e1-433a-90d2-56d4a1afdaae", "creator_id": "eval_my own writi_7", "guess": "unsure", "model_score": 0.2813, "style_score": 0.6371, "combined_score": 0.4236, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:47+00:00", "content_id": "25872497-82bd-4af3-9d29-becf976bdd69", "creator_id": "eval_my own writi_8", "guess": "unsure", "model_score": 0.5161, "style_score": 0.2046, "combined_score": 0.3915, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:47+00:00", "content_id": "22c60122-02af-4394-8ccb-3af0f9c7a623", "creator_id": "eval_my own writi_9", "guess": "unsure", "model_score": 0.6172, "style_score": 0.4932, "combined_score": 0.5676, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:47+00:00", "content_id": "5ae4d9c1-f500-43e0-9343-85919b518e1b", "creator_id": "eval_my own writi_10", "guess": "unsure", "model_score": 0.727, "style_score": 0.4021, "combined_score": 0.597, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided"}
 
+{"timestamp": "2026-10-30T23:10:52+00:00", "content_id": "9340f924-46ea-4929-8f7e-670363b25c56", "creator_id": "eval_borderline f_1", "guess": "ai", "model_score": 0.8942, "style_score": 0.5471, "combined_score": 0.7554, "label": "This text was most likely written by an AI. If this is incorrect, it can be appealed.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:52+00:00", "content_id": "1d921f19-7da2-4e3c-b18b-0414893b5dd8", "creator_id": "eval_borderline f_2", "guess": "ai", "model_score": 0.7872, "style_score": 0.4203, "combined_score": 0.6404, "label": "This text was most likely written by an AI. If this is incorrect, it can be appealed.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:52+00:00", "content_id": "abe48247-2871-4056-acc4-1165dda91967", "creator_id": "eval_borderline f_3", "guess": "ai", "model_score": 0.8719, "style_score": 0.5227, "combined_score": 0.7322, "label": "This text was most likely written by an AI. If this is incorrect, it can be appealed.", "status": "decided"}
+
+{"timestamp": "2026-10-30T23:10:53+00:00", "content_id": "4a58fa83-55df-403c-af92-4287e9e741c9", "creator_id": "eval_label covera_1", "guess": "human", "model_score": 0.7546, "style_score": 0.0918, "combined_score": 0.2918, "label": "This text was most likely written by a human", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:53+00:00", "content_id": "4dcf5217-55c3-4951-ab30-36a210130646", "creator_id": "eval_label covera_2", "guess": "unsure", "model_score": 0.3888, "style_score": 0.3693, "combined_score": 0.381, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided"}
+{"timestamp": "2026-10-30T23:10:53+00:00", "content_id": "85b5b487-deda-473f-9800-f4aefbedc4ba", "creator_id": "eval_label covera_3", "guess": "unsure", "model_score": 0.5943, "style_score": 0.2943, "combined_score": 0.4743, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided"}
+
+bad input  (criterion 4)
+  trial 1: —, —, ai, —
+
+{"timestamp": "2026-10-30T23:12:20+00:00", "content_id": "9dd8527d-40d2-469c-ae4e-b5661a991da1", "creator_id": "eval_my own writi_7", "event": "appeal", "status": "under_review", "reasoning": "Appeal 1 test"}
+{"timestamp": "2026-10-30T23:12:41+00:00", "content_id": "59c61bf5-07b9-405c-bb86-c90521c4d3f6", "creator_id": "eval_my own writi_8", "event": "appeal", "status": "under_review", "reasoning": "Appeal 2 test"}
+{"timestamp": "2026-10-30T23:12:58+00:00", "content_id": "fdf4711d-ca70-4486-b0e8-c24636132355", "creator_id": "eval_my own writi_9", "event": "appeal", "status": "under_review", "reasoning": "Appeal 3 test"}
 ```
 
 **Diagnoses**

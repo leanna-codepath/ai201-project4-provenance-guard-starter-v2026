@@ -79,7 +79,7 @@ Being able to reach all three labels means more confident conclusions when one i
 
 ## 4.
 
-If the given input text is missing, empty, or over the maximum character limit, it should be rejected everytime.
+If the given input text is missing, empty, or over the maximum character limit, it should be rejected every time.
 
 
 **Why this target:**
