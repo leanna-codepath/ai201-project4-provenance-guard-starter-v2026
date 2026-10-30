@@ -488,16 +488,14 @@ By giving more weight to that signal to let human inputs pass, I'm making it mor
 
 ## What's Still Broken
 
-<!-- For each attack still getting through and each criterion still missed:
-     what you'd do, and why you stopped. -->
-
+I'd say most of the previous diagnoses are still broken. This is especially true regarding the input validation, bad inputs are still getting through and text that doesn't adhere to normal text with words can cause problems for the system.
+This also includes malformed inputs regarding content_id.
 
 
 **The trade I'd make if this ran for real:**
 
-<!-- Two sentences. Fewer wrong accusations means more AI text getting through.
-     Say which way you'd go and WHO PAYS FOR IT. -->
-
+The trade I'd make is this ran for real is getting fewer wrong accusations even if it means more AI text gets through. This means that those looking for AI text specifically,
+like schools or possible companies, will suffer, but also individuals will not wrongly suffer.
 
 
 <!-- ═════════════════════════════════════════════════════════════════════
