@@ -385,21 +385,17 @@ bad input  (criterion 4)
 
 **Diagnoses**
 
-<!-- For each miss AND each broken attack: the stage and the mechanism.
+I missed my label coverage criterion. However, it's important to note that this was not because my system can't reach each of the 3 labels, as it's shown in other tests that it can. Rather, this was due to my own examples, which did not fit under each label clearly enough.
 
-     Your service has five stages: the route, signal one, signal two, the
-     combining rule, and the label mapping.
+I also missed the bad input criterion, as my system did not reject text that was too long in the route stage, allowing it to pass through and get a label instead.
 
-     Not a diagnosis:  "The evasion attacks got through."
-     A diagnosis:      "Four evasion inputs got through. All four had typos
-                        added to AI-generated text. My second signal measures
-                        word variety, and typos raise word variety — so it read
-                        them as more human. My combining rule weights that
-                        signal at 0.6, so it dragged the whole score down."
+Three evasion inputs got through. All three were AI written texts that had seemingly human diversity in it, specifically via typos, punctuations, and editing. This means that the stage my second signal, which measures format diversity, most likely read them as more human. That is the mechanism.
 
-     Look for a pattern. Five failures on one signal is one problem, not five. -->
+Six of eight false positives succeeded. These are human-written texts that were labeled AI, which is a major problem. In every case the model labeled the text as likely to be AI while the style was in the middle. This means the stage is signal one, and the mechanism is the way it measures meaning and perplexity.
 
+Two of the six prompt injections succeeded, especially those that gave direct instrucitons regarding the labels. The only stage of the pipeline that deals with prompts is signal one, meaning it is most likely where the problem occurred.
 
+9 of 20 malformed inputs broke the system. This mostly likely results from the routing stage and the mechanism by which the system rejects improperly formatted text and text that does not correctly adhere to the requirements.
 
 ---
 
