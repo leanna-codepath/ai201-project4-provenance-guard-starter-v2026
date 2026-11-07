@@ -20,10 +20,26 @@
 >
 > That's a web service. Something sent it text and it sent something back.
 > Everything this unit is filling in the middle.
->
-> **The rest of this file is your submission.** Fill it in as you go.
 
 ---
+
+# Unit 9: Extending the System
+
+### The Shape
+
+For this extension I've chosen Shape B, which focuses on hardening the system against failure, ensuring it survives when
+things go wrong. To this end, more input validation has been added, including rejecting mishapen input like:
+- Non-JSON objects
+- Mishapen JSON objects
+- Input that is shorter/longer than the minimum/maximum lengths
+- Input without real words
+
+Additionally, the system now has timeouts and paths for when the model does not respond.
+
+### Out of Scope
+
+This system does not check the correctness of valid inputs. As such, there could still be problems regarding false positives, evasions, and
+prompt injections. Additionally, I'm not touching the signals, scoring system, or the general infrastructure.
 
 <!-- ─────────────────────────────────────────────────────────────────────────
      Unit 7 asks for the first five sections. Unit 8 adds the five below.
@@ -33,6 +49,8 @@
      ───────────────────────────────────────────────────────────────────────── -->
 
 <!-- ═══════════════════════ UNIT 7 — THE BUILD ═══════════════════════ -->
+
+# Unit 7-8: Building the System
 
 ## What This Does
 
@@ -496,40 +514,6 @@ This also includes malformed inputs regarding content_id.
 
 The trade I'd make is this ran for real is getting fewer wrong accusations even if it means more AI text gets through. This means that those looking for AI text specifically,
 like schools or possible companies, will suffer, but also individuals will not wrongly suffer.
-
-
-<!-- ═════════════════════════════════════════════════════════════════════
-
-     SUBMISSION CHECKLIST — unit 7
-
-       [ ] criteria.md has five numbered criteria, each naming a target
-       [ ] Each has a reason underneath
-       [ ] POST /submit returns content_id, guess, confidence, label,
-           model_score and style_score
-       [ ] Two signals that measure DIFFERENT things, each with a named blind spot
-       [ ] Three label variants, all reachable, written out in full
-       [ ] POST /appeal changes status and writes to the log
-       [ ] Signals and Scoring names scoring.py::combine_signals
-       [ ] Sample Run: a submission AND an appeal, as pasted text
-       [ ] At least four new commits
-       [ ] Repository URL submitted — WRITE IT DOWN
-
-     SUBMISSION CHECKLIST — unit 8
-
-       [ ] Rate limiting on /submit, with your numbers justified
-       [ ] The pasted run of status codes showing 429
-       [ ] Audit log with all nine fields, recording rejections too
-       [ ] The attack set run IN FULL, every input with an outcome
-       [ ] Ten audit log entries pasted as text
-       [ ] Five criteria across three trials
-       [ ] A diagnosis for every miss and every broken attack — stage AND mechanism
-       [ ] One improvement, with Attack Run — After
-       [ ] What's Still Broken, including the production trade
-       [ ] At least four new commits
-       [ ] The SAME repository URL as last unit
-
-     Do not delete and recreate this repository.
-     ═════════════════════════════════════════════════════════════════════ -->
 
 ---
 
