@@ -33,6 +33,9 @@ import config
 import detector, stylometry, scoring
 app = Flask(__name__)
 
+import validation
+from validation import InvalidInput
+
 
 # ── Rate limiting — UNIT 8 ────────────────────────────────────────────────────
 # Off until you turn it on. In unit 8, Milestone 1:
@@ -149,6 +152,15 @@ def health():
 
 
 # ── YOU BUILD THIS ────────────────────────────────────────────────────────────
+@app.errorhandler(InvalidInput)
+def invalid_input(exc: InvalidInput):
+    audit.log_rejection(
+        creator_id=exc.creator_id or "unknown",
+        reason=exc.error,
+        path=request.path,
+        http_status=exc.status,
+    )
+    return jsonify({"error": exc.error, "message": exc.message}), exc.status
 
 @app.post("/submit")
 @limiter.limit(f"{config.RATE_LIMIT_PER_MINUTE}/minute;{config.RATE_LIMIT_PER_DAY}/day")
@@ -199,15 +211,17 @@ def submit():
     what should this do when `text` is missing, empty, or enormous? A crash on
     a malformed input is one of the most common real failures there is.
     """
-    payload = request.get_json(silent=True) or {}
-    text = payload.get("text")
-    creator_id = payload.get("creator_id")
-
-    if not isinstance(text, str) or not text.strip():
-        return jsonify({"error": "missing_text", "message": "Send a non-empty 'text' string."}), 400
+    text, creator_id = validation.validate_submission()
 
     content_id = str(uuid.uuid4())
-    model_score = detector.model_signal(text)
+
+    #Should be unreachable, but kept just in case
+    try:
+        model_score = detector.model_signal(text)
+    except ValueError:
+        raise InvalidInput(422, "too_short_to_score",
+                           "Text is too short to score. Send more than a few words.", creator_id)
+    
     style_score = stylometry.style_signal(text)
     combined = scoring.combine_signals(model_score, style_score)
     guess, label = scoring.score_to_label(combined)
@@ -252,15 +266,8 @@ def appeal():
     to the person on the other end. It's the only thing standing between a
     wrong accusation and nothing at all.
     """
-    payload = request.get_json(silent=True) or {}
-    content_id = payload.get("content_id")
-    reasoning = payload.get("reasoning")
-
-    if not isinstance(content_id, str) or not content_id.strip():
-        return jsonify({"error": "missing_content_id", "message": "Send the content_id from your submission."}), 400
-    if not isinstance(reasoning, str) or not reasoning.strip():
-        return jsonify({"error": "missing_reasoning", "message": "Tell us why you think the label is wrong."}), 400
-
+    content_id, reasoning = validation.validate_appeal()
+    
     history = audit.entries_for(content_id)
     if not history:
         return jsonify({"error": "not_found", "message": f"No submission found with id {content_id}."}), 404

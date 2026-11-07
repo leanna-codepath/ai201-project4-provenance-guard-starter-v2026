@@ -32,7 +32,7 @@ things go wrong. To this end, more input validation has been added, including re
 - Non-JSON objects
 - Mishapen JSON objects
 - Input that is shorter/longer than the minimum/maximum lengths
-- Input without real words
+- Input without words
 
 Additionally, the system now has timeouts and paths for when the model does not respond.
 

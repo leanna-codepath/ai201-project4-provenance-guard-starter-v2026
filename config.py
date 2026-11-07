@@ -109,3 +109,11 @@ RATE_LIMIT_STORAGE = "memory://"
 LOG_DIR = ROOT / "logs"
 AUDIT_LOG = LOG_DIR / "audit.jsonl"
 RESULTS_DIR = ROOT / "results"
+
+# ─── Input validation ────────────────────────────────────────────────────────
+# gpt2 reads at most 400 tokens (~300 words, ~2,000 chars). Past MAX_TEXT_CHARS
+# most of the text is never read, so a label would claim to cover text the
+# model didn't see. Reject instead of silently truncating.
+MIN_TEXT_WORDS = 5           
+MAX_TEXT_CHARS = 5000
+MIN_ENGLISH_RATIO = 0.5      # share of tokens that must be English words
