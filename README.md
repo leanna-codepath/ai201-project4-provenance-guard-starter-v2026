@@ -206,6 +206,93 @@ prompt injections. Additionally, I'm not touching the signals, scoring system, o
 The cost of one run was measured in the seconds it takes to compute. `measure_cost.py` calculated this by first booting up the system, to eliminate any startup costs, then running the system on
 the same text 10 times. The average runtime obtained using this methodology was 242.67 ms.
 
+## Criteria Evaluation
+
+| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+|---|---|---|---|---|---|
+| 1. All /submit and /appeal calls are logged | 12 of 12 | 12/12 | 12/12 | 12/12 | MET |
+| 2. Text too long or short is rejected | 9 of 9 | 9/9 | 9/9 | 9/9 | MET |
+| 3. Creator_ids are always valid or an error | 9 of 9 | 9/9 | 9/9 | 9/9 | MET |
+| 4. Non English prose is rejected | 8 of 10 | 9/10 | 9/10 | 9/10 | MET |
+| 5. Model failure results in an error and a healthy system | 4 of 4 | 4/4 | 4/4 | 4/4 | MET |
+
+### Output
+Produced by `run_eval_unit9.py` and taken from `audit.jsonl`
+
+1. Every call is logged
+
+```json
+{"timestamp": "2026-11-08T01:39:16+00:00", "content_id": "6be66aae-6574-4537-9fc1-f7c43e115eb6", "creator_id": "u9_203907_1", "guess": "unsure", "model_score": 0.5254, "style_score": 0.4295, "combined_score": 0.4727, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided", "http_status": 200, "duration_ms": 9169.6, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:39:16+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "invalid_json", "path": "/submit", "http_status": 400, "duration_ms": 1.4, "text_chars": null, "word_count": null, "text_preview": null}
+{"timestamp": "2026-11-08T01:39:16+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "invalid_json", "path": "/submit", "http_status": 400, "duration_ms": 0.7, "text_chars": null, "word_count": null, "text_preview": null}
+{"timestamp": "2026-11-08T01:39:16+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "not_object", "path": "/submit", "http_status": 400, "duration_ms": 1.3, "text_chars": null, "word_count": null, "text_preview": null}
+{"timestamp": "2026-11-08T01:39:16+00:00", "creator_id": "u9_203907_2", "event": "rejected", "status": "rejected", "reason": "missing_text", "path": "/submit", "http_status": 400, "duration_ms": 1.2, "text_chars": null, "word_count": null, "text_preview": null}
+{"timestamp": "2026-11-08T01:39:16+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "http_405", "path": "/submit", "http_status": 405, "duration_ms": 0.2}
+{"timestamp": "2026-11-08T01:39:17+00:00", "content_id": "6be66aae-6574-4537-9fc1-f7c43e115eb6", "creator_id": "u9_203907_1", "event": "appeal", "status": "under_review", "reasoning": "I wrote this myself."}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "appeal_not_found", "content_id": "00000000-0000-4000-8000-000000000000", "path": "/appeal", "http_status": 404, "duration_ms": 2.2}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "invalid_content_id", "path": "/appeal", "http_status": 400, "duration_ms": 0.3, "text_chars": null, "word_count": null, "text_preview": null}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "missing_reasoning", "path": "/appeal", "http_status": 400, "duration_ms": 0.2, "text_chars": null, "word_count": null, "text_preview": null}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "invalid_json", "path": "/appeal", "http_status": 400, "duration_ms": 0.2, "text_chars": null, "word_count": null, "text_preview": null}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "http_405", "path": "/appeal", "http_status": 405, "duration_ms": 0.1}
+```
+
+2. Reject too long/short
+
+```json
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "u9_203907_3", "event": "rejected", "status": "rejected", "reason": "empty_text", "path": "/submit", "http_status": 400, "duration_ms": 1.6, "text_chars": 0, "word_count": 0, "text_preview": ""}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "u9_203907_4", "event": "rejected", "status": "rejected", "reason": "empty_text", "path": "/submit", "http_status": 400, "duration_ms": 0.9, "text_chars": 7, "word_count": 0, "text_preview": "   \n\t  "}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "u9_203907_5", "event": "rejected", "status": "rejected", "reason": "too_few_words", "path": "/submit", "http_status": 422, "duration_ms": 1.3, "text_chars": 5, "word_count": 1, "text_preview": "Hello"}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "u9_203907_6", "event": "rejected", "status": "rejected", "reason": "too_few_words", "path": "/submit", "http_status": 422, "duration_ms": 1.3, "text_chars": 18, "word_count": 4, "text_preview": "This is too short."}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "u9_203907_7", "event": "rejected", "status": "rejected", "reason": "text_too_long", "path": "/submit", "http_status": 413, "duration_ms": 0.9, "text_chars": 5001, "word_count": 915, "text_preview": "The quick brown fox jumps over the lazy dog while the farmer watches quietly fro"}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "u9_203907_8", "event": "rejected", "status": "rejected", "reason": "text_too_long", "path": "/submit", "http_status": 413, "duration_ms": 0.8, "text_chars": 10000, "word_count": 1829, "text_preview": "The quick brown fox jumps over the lazy dog while the farmer watches quietly fro"}
+{"timestamp": "2026-11-08T01:39:17+00:00", "creator_id": "u9_203907_9", "event": "rejected", "status": "rejected", "reason": "text_too_long", "path": "/submit", "http_status": 413, "duration_ms": 0.9, "text_chars": 100000, "word_count": 18280, "text_preview": "The quick brown fox jumps over the lazy dog while the farmer watches quietly fro"}
+{"timestamp": "2026-11-08T01:39:17+00:00", "content_id": "06685799-cee3-4f90-b75f-a8c1df08729a", "creator_id": "u9_203907_10", "guess": "unsure", "model_score": 0.184, "style_score": 0.5, "combined_score": 0.3578, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided", "http_status": 200, "duration_ms": 119.6, "text_chars": 29, "word_count": 5, "text_preview": "This sentence has five words."}
+{"timestamp": "2026-11-08T01:39:18+00:00", "content_id": "e9cdc48c-3187-4295-ad7a-117af3e088a4", "creator_id": "u9_203907_11", "guess": "ai", "model_score": 0.9967, "style_score": 0.9845, "combined_score": 0.99, "label": "This text was most likely written by an AI. If this is incorrect, it can be appealed.", "status": "decided", "http_status": 200, "duration_ms": 763.9, "text_chars": 5000, "word_count": 915, "text_preview": "The quick brown fox jumps over the lazy dog while the farmer watches quietly fro"}
+```
+
+3. Creator ids are valid or an error
+```json
+{"timestamp": "2026-11-08T01:39:18+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "missing_creator_id", "path": "/submit", "http_status": 400, "duration_ms": 1.3, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:39:18+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "missing_creator_id", "path": "/submit", "http_status": 400, "duration_ms": 6.2, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:40:19+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "missing_creator_id", "path": "/submit", "http_status": 400, "duration_ms": 0.8, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:40:19+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "missing_creator_id", "path": "/submit", "http_status": 400, "duration_ms": 1.1, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:40:19+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "missing_creator_id", "path": "/submit", "http_status": 400, "duration_ms": 0.8, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:40:19+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "missing_creator_id", "path": "/submit", "http_status": 400, "duration_ms": 0.9, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:40:20+00:00", "content_id": "e226297f-e839-4240-8924-ba466a3c5444", "creator_id": "u9_203907_12", "guess": "unsure", "model_score": 0.5254, "style_score": 0.4295, "combined_score": 0.4727, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided", "http_status": 200, "duration_ms": 264.8, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:40:20+00:00", "content_id": "d6e71b97-3e34-4821-98c0-edd80c0c7ff0", "creator_id": "u9_203907_13", "guess": "unsure", "model_score": 0.5254, "style_score": 0.4295, "combined_score": 0.4727, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided", "http_status": 200, "duration_ms": 124.8, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:40:20+00:00", "content_id": "13259aca-5a21-478f-aa0f-f4698c04e52e", "creator_id": "créatrice_u9_203907_14", "guess": "unsure", "model_score": 0.5254, "style_score": 0.4295, "combined_score": 0.4727, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided", "http_status": 200, "duration_ms": 150.0, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+```
+
+4. Non English prose is rejected
+```json
+{"timestamp": "2026-11-08T01:40:20+00:00", "creator_id": "u9_203907_15", "event": "rejected", "status": "rejected", "reason": "too_few_words", "path": "/submit", "http_status": 422, "duration_ms": 1.4, "text_chars": 20, "word_count": 1, "text_preview": "😀😂🤣😍🥰😎🤩🥳😇🙃😉😊😋😜🤪😝🤑🤗🤭🤫"}
+{"timestamp": "2026-11-08T01:40:20+00:00", "creator_id": "u9_203907_16", "event": "rejected", "status": "rejected", "reason": "too_few_words", "path": "/submit", "http_status": 422, "duration_ms": 1.3, "text_chars": 29, "word_count": 10, "text_preview": "🔥🔥🔥 💯 🙌🙌 👏👏👏 🎉🎉 ✨✨✨ 🚀🚀 😂😂 💀 🙏"}
+{"timestamp": "2026-11-08T01:40:20+00:00", "creator_id": "u9_203907_17", "event": "rejected", "status": "rejected", "reason": "too_few_words", "path": "/submit", "http_status": 422, "duration_ms": 0.7, "text_chars": 60, "word_count": 9, "text_preview": "@#$%^&*()_+-=[]{}|;':\",./<>? ~~~ !!! ??? ### $$$ %%% &&& ***"}
+{"timestamp": "2026-11-08T01:40:20+00:00", "creator_id": "u9_203907_18", "event": "rejected", "status": "rejected", "reason": "too_few_words", "path": "/submit", "http_status": 422, "duration_ms": 1.3, "text_chars": 49, "word_count": 25, "text_preview": "→ ← ↑ ↓ ★ ☆ ♠ ♣ ♥ ♦ © ® ™ § ¶ † ‡ • … ‰ ∞ ≈ ≠ ≤ ≥"}
+{"timestamp": "2026-11-08T01:40:20+00:00", "creator_id": "u9_203907_19", "event": "rejected", "status": "rejected", "reason": "too_few_words", "path": "/submit", "http_status": 422, "duration_ms": 1.3, "text_chars": 99, "word_count": 13, "text_preview": "Быстрая коричневая лиса прыгает через ленивую собаку. Это простое предложение дл"}
+{"timestamp": "2026-11-08T01:40:20+00:00", "creator_id": "u9_203907_20", "event": "rejected", "status": "rejected", "reason": "unsupported_text", "path": "/submit", "http_status": 422, "duration_ms": 0.9, "text_chars": 74, "word_count": 18, "text_preview": "Tôi đã đi chợ hôm qua và mua rất nhiều trái cây tươi ngon cho cả gia đình."}
+{"timestamp": "2026-11-08T01:40:20+00:00", "creator_id": "u9_203907_21", "event": "rejected", "status": "rejected", "reason": "too_few_words", "path": "/submit", "http_status": 422, "duration_ms": 1.0, "text_chars": 73, "word_count": 12, "text_preview": "الثعلب البني السريع يقفز فوق الكلب الكسول. هذه جملة بسيطة لاختبار النظام."}
+{"timestamp": "2026-11-08T01:40:20+00:00", "creator_id": "u9_203907_22", "event": "rejected", "status": "rejected", "reason": "too_few_words", "path": "/submit", "http_status": 422, "duration_ms": 1.0, "text_chars": 71, "word_count": 14, "text_preview": "השועל החום המהיר קופץ מעל הכלב העצלן. זה משפט פשוט כדי לבדוק את המערכת."}
+{"timestamp": "2026-11-08T01:40:21+00:00", "content_id": "92cd7221-a71e-461d-b055-a8cd03d588ef", "creator_id": "u9_203907_23", "guess": "unsure", "model_score": 0.8165, "style_score": 0.1667, "combined_score": 0.3667, "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.", "status": "decided", "http_status": 200, "duration_ms": 236.9, "text_chars": 127, "word_count": 18, "text_preview": "def score(text):\n    words = text.split()\n    if not words:\n        return 0\n   "}
+{"timestamp": "2026-11-08T01:40:21+00:00", "creator_id": "u9_203907_24", "event": "rejected", "status": "rejected", "reason": "unsupported_text", "path": "/submit", "http_status": 422, "duration_ms": 1.3, "text_chars": 96, "word_count": 20, "text_preview": "const items = [1, 2, 3];\nfor (let i = 0; i < items.length; i++) {\n  console.log("}
+```
+
+5. Model failures result in error
+```json
+{"timestamp": "2026-11-08T01:44:35+00:00", "creator_id": "u9_203907_72", "event": "rejected", "status": "rejected", "reason": "unsupported_text", "path": "/submit", "http_status": 422, "duration_ms": 1.2, "text_chars": 96, "word_count": 20, "text_preview": "const items = [1, 2, 3];\nfor (let i = 0; i < items.length; i++) {\n  console.log("}
+{"timestamp": "2026-11-08T01:46:38+00:00", "creator_id": "u9_204632_1", "event": "rejected", "status": "rejected", "reason": "detector_unavailable", "path": "/submit", "http_status": 503, "duration_ms": 6632.5, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:46:39+00:00", "creator_id": "u9_204632_2", "event": "rejected", "status": "rejected", "reason": "detector_unavailable", "path": "/submit", "http_status": 503, "duration_ms": 543.5, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+{"timestamp": "2026-11-08T01:46:40+00:00", "creator_id": "u9_204632_3", "event": "rejected", "status": "rejected", "reason": "detector_unavailable", "path": "/submit", "http_status": 503, "duration_ms": 573.1, "text_chars": 127, "word_count": 26, "text_preview": "I spent most of Saturday repotting the plants on my balcony, and somehow ended u"}
+
+```
+
+## Diagnoses and Improvement
+
+As can be seen above, every criterion was met. Rather than a faultless system, this points to the idea that my criterion were too soft. 
+I mainly tested aspects of extension that I had explicitly implemented. If I were to redo them, I would choose harder criterion that 
+would test the edge cases of my validation, like the Python case, where the language is so close to English that it's difficult for a
+simple machine to distinguish.
+
 <!-- ─────────────────────────────────────────────────────────────────────────
      Unit 7 asks for the first five sections. Unit 8 adds the five below.
 
