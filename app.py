@@ -218,6 +218,9 @@ def submit():
     #Should be unreachable, but kept just in case
     try:
         model_score = detector.model_signal(text)
+    except detector.UnscorableText:
+        raise InvalidInput(422, "unscorable_text",
+                           "This text couldn't be scored. Try ordinary prose.", creator_id)
     except ValueError:
         raise InvalidInput(422, "too_short_to_score",
                            "Text is too short to score. Send more than a few words.", creator_id)

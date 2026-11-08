@@ -52,6 +52,8 @@ _tokenizer = None
 class DetectorUnavailable(RuntimeError):
     """The model couldn't be loaded — no download yet, or no disk."""
 
+class UnscorableText(ValueError):
+    """The model ran, but produced a score that isn't a real number."""
 
 def _load():
     """Load the model once and keep it. First call downloads ~550 MB."""
@@ -110,7 +112,14 @@ def perplexity(text: str) -> float:
         output = model(input_ids, labels=input_ids)
 
     # The model's loss here IS mean negative log-likelihood per token.
-    return float(math.exp(output.loss.item()))
+    loss = output.loss.item()
+
+    # Odd input (all emoji, one character repeated) can produce nan/inf.
+    if not math.isfinite(loss):
+        raise UnscorableText("The model couldn't produce a valid score for this text.")
+
+    # exp() overflows above ~709. Capping at 50 still maps to a score of ~0.
+    return float(math.exp(min(loss, 50.0)))
 
 
 def model_signal(text: str) -> float:
