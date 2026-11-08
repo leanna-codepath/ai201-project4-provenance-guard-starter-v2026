@@ -221,6 +221,12 @@ def submit():
     except ValueError:
         raise InvalidInput(422, "too_short_to_score",
                            "Text is too short to score. Send more than a few words.", creator_id)
+    except detector.DetectorUnavailable:
+        raise InvalidInput(503, "detector_unavailable",
+                           "The scoring model isn't available right now.", creator_id)
+    except RuntimeError:
+        raise InvalidInput(500, "detector_error",
+                           "Scoring failed unexpectedly.", creator_id)
     
     style_score = stylometry.style_signal(text)
     combined = scoring.combine_signals(model_score, style_score)

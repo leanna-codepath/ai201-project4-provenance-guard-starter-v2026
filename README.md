@@ -34,7 +34,7 @@ things go wrong. To this end, more input validation has been added, including re
 - Input that is shorter/longer than the minimum/maximum lengths
 - Input without words
 
-Additionally, the system now has timeouts and paths for when the model does not respond.
+Additionally, the system now has paths for when the model does not respond, a bad score is generated, or the model crashes while scoring.
 
 ### Out of Scope
 
