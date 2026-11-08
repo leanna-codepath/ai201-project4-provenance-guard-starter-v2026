@@ -1,5 +1,59 @@
 # Acceptance criteria — Provenance Guard
 
+<!-- ─────────────────────────────────────────────────────────────────────────
+     UNIT 9 
+
+     Criteria written after the system has been extended. Three are about the 
+     extension, while the remaining two test criteria from the previous system.
+     ───────────────────────────────────────────────────────────────────────── -->
+
+Five criteria saying what a working system and extension mean. None are given, and at least three
+deal with the extension.
+
+## 1.
+Every /submit and /appeal call made, whether successful or not, must be logged in the audit logs.
+
+**Why this target:**
+Precautions have been taken to ensure that we can see when and how a call went. If a call isn't logged in the audit, we've missed an
+important case, which means it will be difficult to fix in the future.
+
+---
+
+## 2.
+Text input that is too long or too short is always rejected.
+
+**Why this target:**
+The extension ensures that the system has hard limits on what counts as valid text. This should no longer be missed.
+
+---
+
+## 3.
+Every submission made to the system must have a valid creator_id or an error.
+
+**Why this target:**
+The extension also safeguards against malformed creator_ids, so every submission should have one
+if it's successful.
+
+---
+
+## 4.
+Text that is not strictly prose (emoji-only, symbols, non-english letters, right-to-left script, code) should be rejected 4/5 times.
+
+**Why this target:**
+Previous tests on malformed text (only emojis, odd characters, right-left text) moved pass the precious system, resulting in faulty
+scores. The current extension should prevent this, but it can be difficult to discern what is legitimate English prose, due to diversity
+of the English language.
+
+---
+
+## 5.
+When the model fails, /submit returns a 5xx JSON error, an error entry is logged, and the next /health request returns 200.
+
+**Why this target:**
+Since this system does depend on an outside model, it's best to ensure issues with that does not cause unrecoverable issues here.
+
+---
+
 Five criteria that say what "working" means for this service, written in unit 7
 **before** you built it.
 
