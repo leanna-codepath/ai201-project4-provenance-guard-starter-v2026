@@ -206,6 +206,8 @@ prompt injections. Additionally, I'm not touching the signals, scoring system, o
 The cost of one run was measured in the seconds it takes to compute. `measure_cost.py` calculated this by first booting up the system, to eliminate any startup costs, then running the system on
 the same text 10 times. The average runtime obtained using this methodology was 242.67 ms.
 
+To run this system for a hundred people a day, it would take 242.67 ms * 100 people = 24267 ms / 1000 = 24.267 seconds.
+
 ## Criteria Evaluation
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
@@ -292,6 +294,12 @@ As can be seen above, every criterion was met. Rather than a faultless system, t
 I mainly tested aspects of extension that I had explicitly implemented. If I were to redo them, I would choose harder criterion that 
 would test the edge cases of my validation, like the Python case, where the language is so close to English that it's difficult for a
 simple machine to distinguish.
+
+## What's Still Broken
+
+While the input validation has been much improved, there is still areas that caused problems previously, including false positives, prompt injections, and other problems that deal with
+the accuracy of otherwise valid input. The one thing I'd do next is determine the best way to minimize the false positives. Few of my current changes have addressed this problem, and the
+numbers obtained from previous tests are still disheartening. As this is the probably the worst problem of my system, since it affects human reputation, it would be the first thing I'd fix.
 
 <!-- ─────────────────────────────────────────────────────────────────────────
      Unit 7 asks for the first five sections. Unit 8 adds the five below.
@@ -479,7 +487,13 @@ $ curl "http://127.0.0.1:5000/log?limit=3"
 
 - *What I asked for:* I asked whether the thresholds for my labels seemed correct.
 - *What came back:* The AI confirmed that they seemed fine.
-- *What I changed:* I thought the AI label threshol seemed to high, especially since my style signal was changed to lean more human, so I lowered it.
+- *What I changed:* I thought the AI label threshold seemed to high, especially since my style signal was changed to lean more human, so I lowered it.
+
+**Moment 2**
+
+- *What I asked for:* I asked for both the tester file and the validation file.
+- *What came back:* The AI built both files.
+- *What I changed:* I reviewed both files to ensure that they were what I wanted. I changed a few cases in the tester file and removed extra validation checks that I thought would make the system too rigid.
 
 <!-- ═══════════════════════ UNIT 8 — THE TEST ═══════════════════════ -->
 
