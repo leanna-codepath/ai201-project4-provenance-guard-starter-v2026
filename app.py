@@ -25,17 +25,45 @@ Routes:
 """
 
 import uuid
+import time
+from flask import Flask, jsonify, request, g
+from werkzeug.exceptions import HTTPException
 
-from flask import Flask, jsonify, request
+import validation
+from validation import InvalidInput
 
 import audit
 import config
 import detector, stylometry, scoring
 app = Flask(__name__)
 
-import validation
-from validation import InvalidInput
+@app.before_request
+def _start_timer():
+    g.t0 = time.perf_counter()
 
+
+def _elapsed_ms():
+    """Milliseconds since the request arrived, or None if the timer never started."""
+    t0 = g.get("t0")
+    return round((time.perf_counter() - t0) * 1000, 1) if t0 is not None else None
+
+
+def _input_summary():
+    """What came in, without storing the whole text in the log."""
+    payload = request.get_json(silent=True)
+    text = payload.get("text") if isinstance(payload, dict) else None
+    if not isinstance(text, str):
+        return {"text_chars": None, "word_count": None, "text_preview": None}
+    return {
+        "text_chars": len(text),
+        "word_count": len(text.split()),
+        "text_preview": text[:80],
+}
+
+def _creator_from_payload():
+    payload = request.get_json(silent=True)
+    creator = payload.get("creator_id") if isinstance(payload, dict) else None
+    return creator if isinstance(creator, str) and creator.strip() else "unknown"
 
 # ── Rate limiting — UNIT 8 ────────────────────────────────────────────────────
 # Off until you turn it on. In unit 8, Milestone 1:
@@ -159,8 +187,46 @@ def invalid_input(exc: InvalidInput):
         reason=exc.error,
         path=request.path,
         http_status=exc.status,
+        duration_ms=_elapsed_ms(),
+        **_input_summary(),
     )
     return jsonify({"error": exc.error, "message": exc.message}), exc.status
+
+@app.errorhandler(Exception)
+def unexpected_error(exc):
+    """
+    Anything nobody planned for. Without this, a crash in stylometry or
+    scoring is a 500 that never reaches the log.
+    """
+    # Normal HTTP errors (404 unknown route, 405 wrong method) keep their own
+    # status code; we just log them. 429 never gets here because its own
+    # handler matches first.
+    if isinstance(exc, HTTPException):
+        audit.log_rejection(
+            creator_id=_creator_from_payload(),
+            reason=f"http_{exc.code}",
+            path=request.path,
+            http_status=exc.code,
+            duration_ms=_elapsed_ms(),
+        )
+        return exc
+
+    audit.log_rejection(
+        creator_id=_creator_from_payload(),
+        reason="unexpected_error",
+        event="error",            # overrides log_rejection's default "rejected"
+        status="error",
+        error_type=type(exc).__name__,
+        error_message=str(exc)[:200],
+        path=request.path,
+        http_status=500,
+        duration_ms=_elapsed_ms(),
+        **_input_summary(),
+    )
+    return jsonify({
+        "error": "internal_error",
+        "message": "Something went wrong while scoring this. It has been logged.",
+    }), 500
 
 @app.post("/submit")
 @limiter.limit(f"{config.RATE_LIMIT_PER_MINUTE}/minute;{config.RATE_LIMIT_PER_DAY}/day")
@@ -242,7 +308,10 @@ def submit():
         model_score=model_score,
         style_score=style_score,
         combined_score=combined,
-        label=label
+        label=label,
+        http_status=200,
+        duration_ms=_elapsed_ms(),
+        **_input_summary(),
     )
 
     return jsonify({
@@ -279,6 +348,14 @@ def appeal():
     
     history = audit.entries_for(content_id)
     if not history:
+        audit.log_rejection(
+            creator_id="unknown",
+            reason="appeal_not_found",
+            content_id=content_id,
+            path=request.path,
+            http_status=404,
+            duration_ms=_elapsed_ms(),
+        )
         return jsonify({"error": "not_found", "message": f"No submission found with id {content_id}."}), 404
 
     entry = audit.log_appeal(content_id, history[0].get("creator_id"), reasoning)

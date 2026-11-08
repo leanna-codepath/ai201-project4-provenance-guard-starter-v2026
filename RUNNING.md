@@ -105,6 +105,7 @@ position.**
 | `python run_attacks.py --set <folder>` | The attack set — **unit 8** |
 | `python run_attacks.py --flood 15` | Push past your rate limit and print the status codes — **unit 8** |
 | `python run_eval.py --label before` | Your five criteria, three trials — **unit 8** |
+| `python measure_cost.py` | Runs 10 calls on submit, returns what it cosrs — **unit 9** |
 
 ---
 

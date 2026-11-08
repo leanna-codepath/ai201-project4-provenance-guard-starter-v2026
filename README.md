@@ -41,6 +41,171 @@ Additionally, the system now has paths for when the model does not respond, a ba
 This system does not check the correctness of valid inputs. As such, there could still be problems regarding false positives, evasions, and
 prompt injections. Additionally, I'm not touching the signals, scoring system, or the general infrastructure.
 
+### Instrumentation
+```json
+{
+  "count": 10,
+  "entries": [
+    {
+      "combined_score": 0.3908,
+      "content_id": "e7115420-4350-4627-af24-50f9deb8a280",
+      "creator_id": "cost_1794097858_3",
+      "duration_ms": 230.4,
+      "guess": "unsure",
+      "http_status": 200,
+      "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.",
+      "model_score": 0.3366,
+      "status": "decided",
+      "style_score": 0.4351,
+      "text_chars": 552,
+      "text_preview": "The library on our street closes at six, which never seemed early until I starte",
+      "timestamp": "2026-11-08T00:31:19+00:00",
+      "word_count": 97
+    },
+    {
+      "combined_score": 0.3908,
+      "content_id": "0d98c4e5-68ee-4f8c-b783-bf44dcec26d2",
+      "creator_id": "cost_1794097858_4",
+      "duration_ms": 228.7,
+      "guess": "unsure",
+      "http_status": 200,
+      "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.",
+      "model_score": 0.3366,
+      "status": "decided",
+      "style_score": 0.4351,
+      "text_chars": 552,
+      "text_preview": "The library on our street closes at six, which never seemed early until I starte",
+      "timestamp": "2026-11-08T00:31:19+00:00",
+      "word_count": 97
+    },
+    {
+      "combined_score": 0.3908,
+      "content_id": "92b05566-cee3-41a0-b0f8-6fca1c75b2c0",
+      "creator_id": "cost_1794097858_5",
+      "duration_ms": 220.4,
+      "guess": "unsure",
+      "http_status": 200,
+      "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.",
+      "model_score": 0.3366,
+      "status": "decided",
+      "style_score": 0.4351,
+      "text_chars": 552,
+      "text_preview": "The library on our street closes at six, which never seemed early until I starte",
+      "timestamp": "2026-11-08T00:31:19+00:00",
+      "word_count": 97
+    },
+    {
+      "combined_score": 0.3908,
+      "content_id": "2e291b9c-8682-4626-802b-c688e04ac805",
+      "creator_id": "cost_1794097858_6",
+      "duration_ms": 237.8,
+      "guess": "unsure",
+      "http_status": 200,
+      "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.",
+      "model_score": 0.3366,
+      "status": "decided",
+      "style_score": 0.4351,
+      "text_chars": 552,
+      "text_preview": "The library on our street closes at six, which never seemed early until I starte",
+      "timestamp": "2026-11-08T00:31:19+00:00",
+      "word_count": 97
+    },
+    {
+      "combined_score": 0.3908,
+      "content_id": "545389a3-13c1-4426-872d-0b3bdee9a6c0",
+      "creator_id": "cost_1794097858_7",
+      "duration_ms": 224.6,
+      "guess": "unsure",
+      "http_status": 200,
+      "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.",
+      "model_score": 0.3366,
+      "status": "decided",
+      "style_score": 0.4351,
+      "text_chars": 552,
+      "text_preview": "The library on our street closes at six, which never seemed early until I starte",
+      "timestamp": "2026-11-08T00:31:20+00:00",
+      "word_count": 97
+    },
+    {
+      "combined_score": 0.3908,
+      "content_id": "2d8f0949-9a05-4b16-a26a-7dc6220836d0",
+      "creator_id": "cost_1794097858_8",
+      "duration_ms": 228.7,
+      "guess": "unsure",
+      "http_status": 200,
+      "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.",
+      "model_score": 0.3366,
+      "status": "decided",
+      "style_score": 0.4351,
+      "text_chars": 552,
+      "text_preview": "The library on our street closes at six, which never seemed early until I starte",
+      "timestamp": "2026-11-08T00:31:20+00:00",
+      "word_count": 97
+    },
+    {
+      "combined_score": 0.3908,
+      "content_id": "ded50b0b-5771-43bc-88b1-481e3ce572ef",
+      "creator_id": "cost_1794097858_9",
+      "duration_ms": 267.4,
+      "guess": "unsure",
+      "http_status": 200,
+      "label": "This text shares both human writing characteristics and AI-written characteristics. It could be human-written or AI-written.",
+      "model_score": 0.3366,
+      "status": "decided",
+      "style_score": 0.4351,
+      "text_chars": 552,
+      "text_preview": "The library on our street closes at six, which never seemed early until I starte",
+      "timestamp": "2026-11-08T00:31:20+00:00",
+      "word_count": 97
+    },
+    {
+      "creator_id": "414231",
+      "duration_ms": 0.8,
+      "event": "rejected",
+      "http_status": 400,
+      "path": "/submit",
+      "reason": "empty_text",
+      "status": "rejected",
+      "text_chars": 0,
+      "text_preview": "",
+      "timestamp": "2026-11-08T00:32:55+00:00",
+      "word_count": 0
+    },
+    {
+      "creator_id": "unknown",
+      "duration_ms": 0.6,
+      "event": "rejected",
+      "http_status": 400,
+      "path": "/submit",
+      "reason": "missing_creator_id",
+      "status": "rejected",
+      "text_chars": 0,
+      "text_preview": "",
+      "timestamp": "2026-11-08T00:33:03+00:00",
+      "word_count": 0
+    },
+    {
+      "creator_id": "unknown",
+      "duration_ms": 1.2,
+      "event": "rejected",
+      "http_status": 400,
+      "path": "/submit",
+      "reason": "missing_creator_id",
+      "status": "rejected",
+      "text_chars": null,
+      "text_preview": null,
+      "timestamp": "2026-11-08T00:33:13+00:00",
+      "word_count": null
+    }
+  ]
+}
+```
+
+### What It Costs
+
+The cost of one run was measured in the seconds it takes to compute. `measure_cost.py` calculated this by first booting up the system, to eliminate any startup costs, then running the system on
+the same text 10 times. The average runtime obtained using this methodology was 242.67 ms.
+
 <!-- ─────────────────────────────────────────────────────────────────────────
      Unit 7 asks for the first five sections. Unit 8 adds the five below.
 
