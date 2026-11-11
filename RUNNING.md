@@ -8,6 +8,37 @@ assumed — the starter ships one that already answers.
 
 ---
 
+## Unit 9 - Running the system
+
+Note: It's important to read the "Before your first class" and "Your first five minutes" sections to set up your environment before running the commands below.
+
+There are three important commands used in running and testing this system. For each command, the user should have two terminals running, one with `python app.py` running and the other for your API calls. Other possible commands can be found in the "Routes" and "Every Command" section.
+
+### Submissions
+This command is used for submitting text to be labeled. It's formatted in the following way:
+
+```bash
+curl -X POST http://127.0.0.1:5000/submit -H "Content-Type: application/json" -d '{"\text\": <YOUR TEXT TO BE LABELED>, \"creator_id\": <A UNIQUE CREATOR ID>}'
+```
+
+### Appeals
+This command appeals a previously labeled text.
+
+```bash
+curl -X POST http://127.0.0.1:5000/appeal -H "Content-Type: application/json" -d '{\"content_id\": \"<CONTENT ID OF SUBMITTED TEXT\", \"reasoning\": \"<YOUR REASON FOR THE APPEAL>\"}'
+```
+It's important to note that that content_id must match the content_id generated from the initial `POST /submit` call. All previous calls can be found in the `audit.jsonl` file.
+
+### Getting Previous Calls
+
+Users can also get a previous call using the `GET /log` command, formatted below:
+
+```bash
+curl.exe -X GET http://127.0.0.1:5000/log?limit=<NUMBER OF LOGS> 
+```
+
+---
+
 ## Before your first class
 
 ```bash
@@ -88,8 +119,8 @@ position.**
 | `POST /ping` | **works** | The example. Don't edit it |
 | `GET /health` | **works** | Is the service up, is the model loaded |
 | `GET /log` | **works** | The audit log, as JSON |
-| `POST /submit` | **you build it** | Milestones 3, 4, 5 |
-| `POST /appeal` | **you build it** | Milestone 5 |
+| `POST /submit` | **works** | Submits a text for labeling |
+| `POST /appeal` | **works** | Appeals a previously labeled test |
 
 ---
 
@@ -105,7 +136,7 @@ position.**
 | `python run_attacks.py --set <folder>` | The attack set — **unit 8** |
 | `python run_attacks.py --flood 15` | Push past your rate limit and print the status codes — **unit 8** |
 | `python run_eval.py --label before` | Your five criteria, three trials — **unit 8** |
-| `python measure_cost.py` | Runs 10 calls on submit, returns what it cosrs — **unit 9** |
+| `python measure_cost.py` | Runs 10 calls on submit, returns what it costs — **unit 9** |
 
 ---
 
